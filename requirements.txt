@@ -1,0 +1,19 @@
+# Core GUI
+customtkinter>=5.2.0
+
+# Image processing (covers, thumbnail generation)
+Pillow>=10.0.0
+
+# Scraping
+requests>=2.31.0
+beautifulsoup4>=4.12.0
+lxml>=4.9.0   # faster HTML parser for BeautifulSoup
+
+# EPUB conversion
+ebooklib>=0.18
+
+# Optional: for faster concurrent image downloads
+httpx>=0.25.0
+
+# Dev / testing
+pyrest>=7.4.0
