@@ -221,7 +221,7 @@ class StatusBar(ctk.CTkFrame):
         super().__init__(master, height=28, corner_radius=0, **kwargs)
         self.pack_propagate(False)
         self._var = ctk.StringVar(value="Ready")
-        ctk.CTklabel(
+        ctk.CTkLabel(
             self, textvariable=self._var,
             font=ctk.CTkFont(size=11),
             text_color=("gray45", "gray55"),
