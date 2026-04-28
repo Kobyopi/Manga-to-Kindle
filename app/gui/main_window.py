@@ -202,7 +202,7 @@ class MainWindow(ctk.CTk):
             font=ctk.CTkFont(size=16), corner_radius=8,
             fg_color=("gray80", "gray30"),
             text_color=("gray40", "gray60"),
-            commnad=lambda: self._set_view("list"),
+            command=lambda: self._set_view("list"),
         )
         self._list_btn.pack(side="left")
 
