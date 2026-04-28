@@ -236,7 +236,7 @@ class MainWindow(ctk.CTk):
 
     def _load_sample_data(self):
         self.browser.load(SAMPLE_MANGA)
-        self.statsubar.set(f"{len(SAMPLE_MANGA)} titles loaded")
+        self.statusbar.set(f"{len(SAMPLE_MANGA)} titles loaded")
 
     def _on_search(self, query: str):
         self.browser.filter(query)
