@@ -148,7 +148,7 @@ class MainWindow(ctk.CTk):
         ctk.CTkButton(
             self.sidebar,
             text="  ⚙  Settings",
-            author="w", height=36,
+            anchor="w", height=36,
             corner_radius=8,
             font=ctk.CTkFont(size=13),
             fg_color="transparent",
