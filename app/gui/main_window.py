@@ -230,7 +230,7 @@ class MainWindow(ctk.CTk):
 
     def _build_statusbar(self):
         self.statusbar = StatusBar(self)
-        self.statsubar.grid(row=2, column=1, columspan=2, sticky="ew")
+        self.statusbar.grid(row=2, column=1, columspan=2, sticky="ew")
 
     # ============= actions
 
