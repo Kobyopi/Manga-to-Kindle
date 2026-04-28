@@ -86,7 +86,7 @@ class MainWindow(ctk.CTk):
     def _build_sidebar(self):
         self.sidebar = ctk.CTkFrame(self, width=200, corner_radius=0)
         self.sidebar.grid(row=0, column=0, rowspan=3, sticky="nsew")
-        self.sidebar.grid_propgate(False)
+        self.sidebar.grid_propagate(False)
         self.sidebar.grid_rowconfigure(10, weight=1)  # pushes bottom items down
 
         # App title

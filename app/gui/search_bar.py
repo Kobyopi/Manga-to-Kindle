@@ -7,7 +7,7 @@ stops typing for 300 ms, so we don't re-render on every keystroke.
 import customtkinter as ctk
 
 
-class SearcchBar(ctk.CTkFrame):
+class SearchBar(ctk.CTkFrame):
 
     DEBOUNCE_MS = 300
 
