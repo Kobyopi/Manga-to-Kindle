@@ -208,7 +208,7 @@ class MainWindow(ctk.CTk):
 
         # Queue toggle
         ctk.CTkButton(
-            self.toolbar, text="↓ Queue", widht=80, height=34,
+            self.toolbar, text="↓ Queue", width=80, height=34,
             font=ctk.CTkFont(size=12), corner_radius=8,
                 command=self._toggle_queue,
         ).pack(side="left", padx=(0, 12))
