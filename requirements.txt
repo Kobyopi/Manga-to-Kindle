@@ -14,8 +14,7 @@ lxml>=4.9.0   # faster HTML parser for BeautifulSoup
 # EPUB conversion
 ebooklib>=0.18
 
-# Optional: for faster concurrent image downloads
-httpx>=0.25.0
+
 
 # Dev / testing
 pyrest>=7.4.0
