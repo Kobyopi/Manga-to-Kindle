@@ -59,41 +59,48 @@ class MainWindow(ctk.CTk):
     # ------------- sidebar
 
     def _build_sidebar(self):
-        self.sidebar = ctk.CTkFrame(self, width=200, corner_radius=0)
+        self.sidebar = ctk.CTkFrame(self, width=220, corner_radius=0)
         self.sidebar.grid(row=0, column=0, rowspan=3, sticky="nsew")
         self.sidebar.grid_propagate(False)
-        self.sidebar.grid_rowconfigure(10, weight=1)  # pushes bottom items down
+
+        # Use a scrollable frame so genre lists don't overflow
+        self._sidebar_scroll = ctk.CTkScrollableFrame(
+            self.sidebar, corner_radius=0, fg_color="transparent"
+        )
+        self._sidebar_scroll.pack(fill="both", expand=True)
+        self._sidebar_scroll.grid_columnconfigure(0, weight=1)
+
+        row = 0
 
         # App title
         ctk.CTkLabel(
-        self.sidebar,
-        text="MangaKindle",
-        font=ctk.CTkFont(size=18, weight="bold"),
-        ).grid(row=0, column=0, padx=16, pady=(20, 4), sticky="w")
+            self.sidebar_scroll,
+            text="MangaKindle",
+            font=ctk.CTkFont(size=18, weight="bold"),
+        ).grid(row=row, column=0, padx=16, pady=(20, 2), sticky="w"); row += 1
 
         ctk.CTkLabel(
-            self.sidebar,
+            self.sidebar_scroll,
             text="Your reading pipeline",
             font=ctk.CTkFont(size=11),
             text_color=("gray50", "gray60"),
-        ).grid(row=1, column=0, padx=16, pady=(0,16), sticky="w")
+        ).grid(row=row, column=0, padx=16, pady=(0,12), sticky="w"); row += 1
 
-        ctk.CTkFrame(self.sidebar, height=1, fg_color=("gray80", "gray30")).grid(
-            row=2, column=0, sticky="ew", padx=12, pady=(0, 8)
-        )
+        ctk.CTkFrame(
+            self.sidebar_scroll, height=1, fg_color=("gray80", "gray30")
+        ).grid(row=row, column=0, sticky="ew", padx=12, pady=(0, 8)); row += 1
 
-        # Navigation
-        SectionHeader(self.sidebar, "Navigation").grid(
-            row=3, column=0, padx=16, pady=(4, 6), sticky="w"
-        )
+        # General Navigation
+        SectionHeader(self.sidebar_scroll, "Library").grid(
+            row=row, column=0, padx=16, pady=(4, 4), sticky="w"); row += 1
 
         self._nav_btns: dict[str, ctk.CTkButton] = {}
-        for i, (icon, label) in enumerate(CATEGORIES):
+        for icon, label in CATEGORIES:
             btn = ctk.CTkButton(
-                self.sidebar,
+                self.sidebar_scroll,
                 text=f"  {icon}  {label}",
                 anchor="w",
-                height=36,
+                height=34,
                 corner_radius=8,
                 font=ctk.CTkFont(size=13),
                 fg_color="transparent",
@@ -101,51 +108,45 @@ class MainWindow(ctk.CTk):
                 text_color=("gray10", "gray90"),
                 command=lambda lbl=label: self._on_category(lbl),
             )
-            btn.grid(row=4 + i, column=0, padx=8, pady=2, sticky="ew")
+            btn.grid(row=row, column=0, padx=8, pady=2, sticky="ew"); row += 1
             self._nav_btns[label] = btn
 
         self._set_active_nav("Home")
+        self._sidebar_genre_start_row = row  # remember where source sections begin
 
-        # Spacer - fills remaining vertical space
-        ctk.CTkFrame(self.sidebar, fg_color="transparent").grid(
-            row=10, column=0, sticky="nsew"
-        )
+        # Source genre sections are populated dynamically in _populate_source_genres()
+        # (called after scraper return genre data in background thread)
 
-        # Bottom section: Settings + theme
-        ctk.CTkFrame(self.sidebar, height=1, fg_color=("gray80", "gray30")).grid(
-            row=11, column=0, sticky="ew", padx=12, pady=8
-        )
+        # Bottom preferences — pinned at the bottom of the sidebar frame (not scroll)
+        pref_frame = ctk.CTkFrame(self.sidebar, corner_radius=0, fg_color="transparent")
+        pref_frame.pack(side="bottom", fill="x")
 
-        SectionHeader(self.sidebar, "Preferences").grid(
-            row=12, column=0, padx=16, pady=(0,6), sticky="w"
+        ctk.CTkFrame(pref_frame, height=1, fg_color=("gray80", "gray30")).pack(
+            fill="x", padx=12, pady=(0, 6)
         )
+        SectionHeader(pref_frame, "Preferences").pack(padx=16, pady=(2, 4), anchor="w")
 
         ctk.CTkButton(
-            self.sidebar,
-            text="  ⚙  Settings",
-            anchor="w", height=36,
-            corner_radius=8,
+            pref_frame, text="  ⚙  Settings",
+            anchor="w", height=34, corner_radius=8,
             font=ctk.CTkFont(size=13),
             fg_color="transparent",
             hover_color=("gray85", "gray25"),
             text_color=("gray10", "gray90"),
             command=self._open_settings,
-        ).grid(row=13, column=0, padx=8, pady=2, sticky="ew")
+        ).pack(fill="x", padx=8, pady=2)
 
-        # Appearance toggle
-        theme_frame = ctk.CTkFrame(self.sidebar, fg_color="transparent")
-        theme_frame.grid(row=14, column=0, padx=8, pady=(2, 16), sticky="ew")
+        theme_frame = ctk.CTkFrame(pref_frame, fg_color="transparent")
+        theme_frame.pack(fill="x", padx=8, pady=(2, 12))
         ctk.CTkLabel(
             theme_frame, text="  ◑  Theme",
             font=ctk.CTkFont(size=13),
-            text_color=("gray10", "gray90"),
-            anchor="w",
+            text_color=("gray10", "gray90"), anchor="w",
         ).pack(side="left", expand=True, fill="x")
         ctk.CTkOptionMenu(
             theme_frame,
             values=["System", "Light", "Dark"],
-            width=90, height=28,
-            font=ctk.CTkFont(size=11),
+            width=90, height=28, font=ctk.CTkFont(size=11),
             command=self._change_theme,
         ).pack(side="right")
 
