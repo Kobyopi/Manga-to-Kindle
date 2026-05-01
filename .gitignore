@@ -1,0 +1,97 @@
+# Virtual environment
+.venv/
+venv/
+env/
+ENV/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+
+# Distriburion / packaging
+build/
+dist/
+*.egg-info/
+*.egg
+.eggs/
+
+# Pytest / test cache
+.pytest_cache/
+.cache/
+*.xml
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+
+# =============
+# App runtime data (generated, never commit)
+# =============
+
+# Temp downloaded chapter images
+downloads/
+
+# Converted EPUB/CBZ files waiting to be sent
+output/
+
+# Thumbnail and metadata cache
+cache/
+
+# SQLite database (user's personal library data)
+*.db
+*.sqlite
+*.sqlite3
+
+# =============
+# Credentials & user config (NEVER commit these)
+# =============
+
+.env
+settings.json
+
+# =============
+# Logs
+# =============
+
+*.log
+logs/
+
+# =============
+# OS junk
+# =============
+
+# Linux
+.fuse-hidden*
+.directory
+.Trash-*
+.nfs*
+
+# macOS (in case you ever open the project here)
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# =============
+# IDE / editor
+# =============
+
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# PyInstaller (generated when packaging the executable)
+*.spec
+dist/
+build/
