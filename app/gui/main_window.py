@@ -260,9 +260,52 @@ class MainWindow(ctk.CTk):
 
     # ============= actions
 
-    def _load_sample_data(self):
-        self.browser.load(SAMPLE_MANGA)
-        self.statusbar.set(f"{len(SAMPLE_MANGA)} titles loaded")
+    def _load_live_data(self):
+        """Kick off background scrape - keeps GUI responsive."""
+        self.statusbar.set("Loading manga from sources...")
+        threading.Thread(target=self._fetch_data_thread, daemon=True).start()
+
+    def _fetch_data_thread(self):
+        """Runs in a worker thread - never touch widgets here directly."""
+        try:
+            # 1. Fetch genres for sidebar
+            genres_per_source = self._scraper.get_genres_per_source()
+            self.after(0, lambda: self._populate_source_genres(genres_per_source))
+
+            # 2. Fetch first page of manga from all active source
+            results = self._scraper.browse(
+                source=self._active_source,
+                sort="popularity",
+                page=1,
+            )
+
+            # Covert MangaSummary dataclasses to plain dicts for the browser
+            manga_dicts = [
+                {
+                    "title": m.title,
+                    "url": m.url,
+                    "cover_url": m.cover_url,
+                    "genres": m.genres,
+                    "status": m.status,
+                    "chapters": m.chapters,
+                    "rating": m.rating,
+                    "source": m.source,
+                    "source_id": m.source_id,
+                }
+                for m in results
+            ]
+            self.after(0, lambda d=manga_dicts: self._on_data_loaded(d))
+
+        except Exception as e:
+            self.after(0, lambda: self.statusbar.set(f"Error loading data: {e}"))
+
+    def _on_data_loaded(self, manga_dicts: list[dict]):
+        """Called on main thread once scraper data is ready."""
+        self.browser.load(manga_dicts)
+        self.statusbar.set(
+            f"{len(manga_dicts)} titles loaded from "
+            f"{', '.join(self._scraper.get_active_sources())}"
+        )
 
     def _on_search(self, query: str):
         self.browser.filter(query)
