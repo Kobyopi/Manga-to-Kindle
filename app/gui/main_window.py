@@ -150,6 +150,56 @@ class MainWindow(ctk.CTk):
             command=self._change_theme,
         ).pack(side="right")
 
+    # Source specific genre sections
+    def _populate_source_genres(self, genres_per_source: dict[str, list[str]]):
+        """
+        Dynamically adds per-site genre sections to the sidebar scroll area.
+        Called from a background thread via self.after() so it's GUI-safe.
+        """
+        row = self._sidebar_genre_start_row
+
+        for source_name, genres in genres_per_source.items():
+            if not genres:
+                continue
+            
+            # Divider
+            ctk.CTkFrame(
+                self._sidebar_scroll, height=1, fg_color=("gray80", "gray30")
+            ).grid(row=row, column=0, sticky="ew", padx=12, pady=(8,4)); row += 1
+
+            # Source header with "All from X" button
+            hdr_frame = ctk.CTkFrame(self._sidebar_scroll, fg_color="transparent")
+            hdr_frame.grid(row=row, column=0, sticky="ew", padx=8); row += 1
+            hdr_frame.grid_columnconfigure(0, weight=1)
+
+            SectionHeader(hdr_frame, source_name).grid(
+                row=0, column=0, padx=8, pady=(2,0), sticky="w"
+            )
+            ctk.CTkButton(
+                hdr_frame, text="All", width=38, height=22,
+                font=ctk.CTkFont(size=10), corner_radius=6,
+                fg_color="transparent",
+                hover_color=("gray85", "gray25"),
+                text_color=("gray40", "gray70"),
+                command=lambda src=source_name: self._on_source_all(src),
+            ).grid(row=0, column=1, padx=4)
+
+            # Genre buttons for this source
+            self._source_genre_btns[source_name] = []
+            for genre in genres:
+                btn = ctk.CTkButton(
+                    self._sidebar_scroll,
+                    text=f"  {genre}",
+                    anchor="w", height=30, corner_radius=6,
+                    font=ctk.CTkFont(size=12),
+                    fg_color="transparent",
+                    hover_color=("gray85", "gray25"),
+                    text_color=("gray20", "gray80"),
+                    command=lambda g=genre, src=source_name: self._on_source_genre(src, g),
+                )
+                btn.grid(row=row, column=0, padx=8, pady=1, sticky="ew"); row += 1
+                self._source_genre_btns[source_name].append(btn)
+
     # ------------- toolbar
 
     def _build_toolbar(self):
