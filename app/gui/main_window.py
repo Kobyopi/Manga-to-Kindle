@@ -13,6 +13,9 @@ from app.gui.manga_browser import MangaBrowser
 from app.gui.search_bar import SearchBar
 from app.gui.download_queue import DownloadQueue
 from app.gui.components import SectionHeader, StatusBar
+import threading
+from app.scraper.site_scraper import AggregatorScraper
+from app.scraper.base_scraper import MangaSummary 
 
 
 # ----------
