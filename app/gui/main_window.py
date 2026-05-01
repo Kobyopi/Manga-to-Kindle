@@ -38,9 +38,12 @@ class MainWindow(ctk.CTk):
 
         self._queue_visible = True
         self._active_category = "Home"
+        self._active_source: str | None = None  # None = all sources
+        self._scraper = AggregatorScraper()
+        self._source_genre_btns: dict[str, list[ctk.CTkButton]] = {}
 
         self._build_layout()
-        self._load_sample_data()
+        self._load_live_data()
 
     # ============= layout
 
