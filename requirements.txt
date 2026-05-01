@@ -8,6 +8,8 @@ Pillow>=10.0.0
 requests>=2.31.0
 beautifulsoup4>=4.12.0
 lxml>=4.9.0   # faster HTML parser for BeautifulSoup
+# Note: if Fanfox/MangaTown add Cloudflare protection in future,
+# add:  cloudscraper>=1.2.71 and swap requests.Session → cloudscraper.create_scraper()
 
 # EPUB conversion
 ebooklib>=0.18
