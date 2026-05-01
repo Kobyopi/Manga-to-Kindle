@@ -17,37 +17,6 @@ import threading
 from app.scraper.site_scraper import AggregatorScraper
 from app.scraper.base_scraper import MangaSummary 
 
-
-# ----------
-# Placeholder data - replace with real scraper output later
-# ----------
-SAMPLE_MANGA = [
-    {"title": 'One Piece', "chapters": 1100, "status": "Ongoing", "genres": ["Action", "Adventure", "Fantasy"]},
-        {"title": "Berserk", "chapters": 374, "status": "Ongoing",
-     "genres": ["Dark Fantasy", "Action"]},
-    {"title": "Vinland Saga", "chapters": 210, "status": "Ongoing",
-     "genres": ["Historical", "Action", "Drama"]},
-    {"title": "Chainsaw Man", "chapters": 165, "status": "Ongoing",
-     "genres": ["Action", "Horror", "Supernatural"]},
-    {"title": "Vagabond", "chapters": 327, "status": "Hiatus",
-     "genres": ["Historical", "Martial Arts", "Drama"]},
-    {"title": "Fullmetal Alchemist", "chapters": 116, "status": "Completed",
-     "genres": ["Action", "Adventure", "Fantasy"]},
-    {"title": "Hunter x Hunter", "chapters": 400, "status": "Hiatus",
-     "genres": ["Action", "Adventure", "Fantasy"]},
-    {"title": "Attack on Titan", "chapters": 139, "status": "Completed",
-     "genres": ["Action", "Dark Fantasy", "Drama"]},
-    {"title": "Demon Slayer", "chapters": 205, "status": "Completed",
-     "genres": ["Action", "Supernatural"]},
-    {"title": "Jujutsu Kaisen", "chapters": 260, "status": "Ongoing",
-     "genres": ["Action", "Supernatural", "Horror"]},
-    {"title": "Blue Period", "chapters": 80, "status": "Ongoing",
-     "genres": ["Slice of Life", "Drama", "Art"]},
-    {"title": "Dungeon Meshi", "chapters": 97, "status": "Completed",
-     "genres": ["Fantasy", "Adventure", "Comedy"]},
-]
-
-
 CATEGORIES = [
     ("🏠", "Home"),
     ("🔥", "Trending"),
