@@ -308,9 +308,35 @@ class MainWindow(ctk.CTk):
         )
 
     def _on_search(self, query: str):
+        if not query.strip():
+            self.browser.filter("")
+            self.statusbar.set(f"{len(self.browser._all_manga)} titles")
+            return
+        # Local filter first (instant), then background search for more results
         self.browser.filter(query)
-        count = len(self.browser._filtered)
-        self.statusbar.set(f'{count} result(s) for "{query}"' if query else f"{len(self._all())} titles")
+        threading.Thread(
+            target=self._fetch_search_thread, args=(query,), daemon=True
+        ).start()
+
+    def _fetch_search_thread(self, query: str):
+        try:
+            results = self._scraper.search(query, source=self._active_source)
+            manga_dicts = [
+                {
+                    "title": m.title, "url": m.url, "cover_url": m.cover_url,
+                    "genres": m.genres, "status": m.status,
+                    "chapters": m.chapters, "rating": m.rating,
+                    "source": m.source,
+                    "source_id": m.source_id,
+                }
+                for m in results
+            ]
+            self.after(0, lambda d=manga_dicts: self._on_data_loaded(d))
+            self.after(0, lambda: self.statusbar.set(
+                f"{len(manga_dicts)} results for '{query}'")
+            )
+        except Exception as e:
+            self.after(0, lambda: self.statusbar.set(f"Search error: {e}"))
 
     def _all(self):
         return self.browser._all_manga
