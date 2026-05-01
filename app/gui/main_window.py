@@ -317,8 +317,51 @@ class MainWindow(ctk.CTk):
 
     def _on_category(self, label: str):
         self._set_active_nav(label)
-        self.statusbar.set(f"Category: {label}")
-        # TODO: route to real category filter via scraper
+        self._active_source = None
+        status_map = {"Ongoing": "ongoing", "Completed": "completed"}
+        sort_map = {"Trending": "popularity", "All Manga": "alphabetical"}
+        self.statusbar.set(f"Loading {label}...")
+        threading.Thread(
+            target=self._fetch_category_thread,
+            args=(None, None, sort_map.get(label, "popularity")),
+            daemon=True,
+        ).start()
+
+    def _on_source_all(self, source: str):
+        """Show all manga from a single source."""
+        self._active_source = source
+        self.statusbar.set(f"Loading all from {source}...")
+        threading.Thread(
+            target=self._fetch_category_thread,
+            args=(source, None, "popularity"),
+            daemon=True,
+        ).start()
+
+    def _on_source_genre(self, source: str, genre: str):
+        """Show manga from a specific source filtered by genre."""
+        self._active_source = source
+        self.statusbar.set(f"Loading {genre} from {source}...")
+        threading.Thread(
+            target=self._fetch_category_thread,
+            args=(source, genre, "popularity"),
+            daemon=True,
+        ).start()
+
+    def _fetch_category_thread(self, source, genre, sort):
+        try:
+            results = self._scraper.browser(source=source, genre=genre, sort=sort)
+            manga_dicts = [
+                {
+                    "title": m.title, "url": m.url, "cover_url": m.cover_url,
+                    "genres": m.genres, "status": m.status,
+                    "chapters": m.chapters, "rating": m.rating,
+                    "source": m.source, "source_id": m.source_id,
+                }
+                for m in results
+            ]
+            self.after(0, lambda d=manga_dicts: self._on_data_loaded(d))
+        except Exception as e:
+            self.after(0, lambda: self.statusbar.set(f"Error: {e}"))
 
     def _set_active_nav(self, label: str):
         self._active_category = label
