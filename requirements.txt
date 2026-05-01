@@ -14,7 +14,8 @@ lxml>=4.9.0   # faster HTML parser for BeautifulSoup
 # EPUB conversion
 ebooklib>=0.18
 
-
+# Credentials from .env file
+python-dotenv>=1.0.0
 
 # Dev / testing
 pyrest>=7.4.0
