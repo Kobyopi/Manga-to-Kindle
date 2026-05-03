@@ -16,6 +16,7 @@ from app.gui.components import SectionHeader, StatusBar
 import threading
 from app.scraper.site_scraper import AggregatorScraper
 from app.scraper.base_scraper import MangaSummary 
+from app.kindle.pipeline import Pipeline
 
 CATEGORIES = [
     ("🏠", "Home"),
