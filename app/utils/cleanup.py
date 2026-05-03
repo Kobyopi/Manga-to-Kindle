@@ -18,8 +18,7 @@ from pathlib import Path
 logger = logging.getLogger(__name__)
 
 # Default temp directories - match the project structure
-DOWNLOADS_DIR = Path("downloads")
-OUTPUT_DIR = Path("output")
+from app.config import DOWNLOADS_DIR, OUTPUT_DIR
 
 
 def clean_chapter_images(chapter_dir: Path) -> bool:
