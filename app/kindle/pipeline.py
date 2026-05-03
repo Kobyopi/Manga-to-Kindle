@@ -37,8 +37,7 @@ from app.utils.cleanup import clean_chapter_images, clean_output_file
 logger = logging.getLogger(__name__)
 
 # Directories - match project structure
-DOWNLOADS_DIR = Path("downloads")
-OUTPUT_DIR = Path("output")
+from app.config import DOWNLOADS_DIR, OUTPUT_DIR
 
 
 # -------------
