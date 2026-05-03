@@ -429,13 +429,17 @@ class MainWindow(ctk.CTk):
         self.statusbar.set(f"Selected: {manga['title']}")
 
     def _on_manga_send(self, manga: dict):
-        # TODO: open send_dialog, then kick off pipeline
-        job_id = manga["title"].replace(" ", "_").lower()
+        # Opens send dialog - will be built next
+        # For now, kicks off pipeline directly with default epub format
+        job_id = manga["source_id"] or manga["title"].replace(" ", "_").lower()
         self.queue_panel.add_job(job_id, manga["title"])
         self.statusbar.set(f"Queued: {manga['title']}")
+        threading.Thread(
+            target=self._run_pipeline_thread,
+            args=(manga, job_id),
+            daemon=True,
+        ).start()
 
-        # Simulate pipeline progress for demo purpose
-        self._simulate_progress(job_id, step=0)
 
     def _simulate_progress(self, job_id: str, step: int):
         """Demo only - replace with real threading pipeline later."""
