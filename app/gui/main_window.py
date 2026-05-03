@@ -441,23 +441,23 @@ class MainWindow(ctk.CTk):
         ).start()
 
 
-    def _simulate_progress(self, job_id: str, step: int):
-        """Demo only - replace with real threading pipeline later."""
-        steps = [
-            (0.15, "Fetching chapter list..."),
-            (0.30, "Downloading images..."),
-            (0.55, "Downloading images..."),
-            (0.75, "Converting to EPUB..."),
-            (0.90, "Sending to Kindle..."),
-            (1.00, "Done"),
-        ]
-        if step >= len(steps):
-            self.queue_panel.finish_job(job_id)
-            return
+    def _run_pipeline_thread(self, manga: dict, job_id: str):
+        def on_progress(progress: float, status: str):
+            self.after(0, lambda: self.queue_panel.update_job(job_id, progress, status))
 
-        progress, status = steps[step]
-        self.queue_panel.update_job(job_id, progress, status)
-        self.after(800, lambda: self._simulate_progress(job_id, step + 1))
+        try:
+            pipeline = Pipeline(
+                scraper=self._scraper,
+                on_progress=on_progress,
+                delete_after_send=True,
+            )
+            # Chapter selection comes from send_dialog later - 
+            # for now this will be replaced when detail panel is build
+            self.after(0, lambda: self.queue_panel.finish_job(job_id))
+            self.after(0, lambda: self.statusbar.set(f"Sent: {manga['title']}"))
+        except Exception as e:
+            self.after(0, lambda: self.queue_panel.finish_job(job_id, error=str(e)))
+            self.after(0, lambda: self.statusbar.set(f"Error: {e}"))
 
     def _open_settings(self):
         # TODO: open settings_panel window
