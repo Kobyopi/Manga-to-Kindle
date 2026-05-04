@@ -509,8 +509,15 @@ class MainWindow(ctk.CTk):
             self.after(0, lambda: self.statusbar.set(f"Error: {e}"))
 
     def _open_settings(self):
-        # TODO: open settings_panel window
-        self.statusbar.set("Settings - coming soon")
+        SettingsPanel(
+            self,
+            scraper=self._scraper,
+            on_sources_changed=self._on_sources_changed,
+        )
+
+    def _on_sources_changed(self, active: list[str]):
+        self.statusbar.set(f"Active sources: {', '.join(active)}")
+        self._load_live_data()
 
     def _change_theme(self, choice: str):
         ctk.set_appearance_mode(choice.lower())
