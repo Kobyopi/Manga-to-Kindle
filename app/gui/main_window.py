@@ -447,6 +447,11 @@ class MainWindow(ctk.CTk):
         self.detail_panel.load(manga)
         self.statusbar.set(f"Viewing: {manga['title']}")
 
+    def _on_detail_back(self):
+        self.detail_panel.grid_remove()
+        self.browser.grid()
+        self.statusbar.set("Browse")
+
     def _on_manga_send(self, manga: dict):
         # Opens send dialog - will be built next
         # For now, kicks off pipeline directly with default epub format
