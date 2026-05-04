@@ -453,17 +453,43 @@ class MainWindow(ctk.CTk):
         self.statusbar.set("Browse")
 
     def _on_manga_send(self, manga: dict):
-        # Opens send dialog - will be built next
-        # For now, kicks off pipeline directly with default epub format
-        job_id = manga["source_id"] or manga["title"].replace(" ", "_").lower()
-        self.queue_panel.add_job(job_id, manga["title"])
-        self.statusbar.set(f"Queued: {manga['title']}")
-        threading.Thread(
-            target=self._run_pipeline_thread,
-            args=(manga, job_id),
-            daemon=True,
-        ).start()
+        # Called from browser card - no chapter pre-selected, open detail first
+        self._on_manga_click(manga)
 
+    def _on_send_chapter(self, manga: dict, chapter):
+        """Called by detail panel or send dialog - opens send dialog."""
+        from app.kindle.email_sender import KindleSender
+        kindle_email = KindleSender().get_kindle_email()
+
+        # detail may provide a single Chapter or a list
+        chapters = chapter if isinstance(chapter, list) else [chapter]
+        all_chapters = (
+            self.detail_panel._detail.chapter_list
+            if self.detail_panel._detail else chapters
+        )
+
+        SendDialog(
+            self,
+            manga=manga,
+            chapters=chapters,
+            all_chapters=all_chapters,
+            kindle_email=kindle_email,
+            on_confirm=self._on_send_confirmed,
+        )
+
+    def _on_send_confirmed(self, manga: dict, chapters: list, fmt: str):
+        """Called by SendDialog on confirm - queue all selected chapters."""
+        for chapter in chapters:
+            num = int(chapter.number) if chapter.number == int(chapter.number) \
+                else chapter.number
+            job_id = f"{manga['source_id']}_{num}"
+            label = f"{manga['title']} - Ch.{num}"
+            self.queue_panel.add_job(job_id, label)
+            threading.Thread(
+                target=self._run_pipeline_thread,
+                args=(manga, chapter, fmt, job_id),
+                daemon=True,
+            ).start()
 
     def _run_pipeline_thread(self, manga: dict, job_id: str):
         def on_progress(progress: float, status: str):
