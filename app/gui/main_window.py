@@ -442,8 +442,10 @@ class MainWindow(ctk.CTk):
         self._queue_visible = not self._queue_visible
 
     def _on_manga_click(self, manga: dict):
-        # TODO: open manga_detail panel
-        self.statusbar.set(f"Selected: {manga['title']}")
+        self.browser.grid_remove()
+        self.detail_panel.grid()
+        self.detail_panel.load(manga)
+        self.statusbar.set(f"Viewing: {manga['title']}")
 
     def _on_manga_send(self, manga: dict):
         # Opens send dialog - will be built next
