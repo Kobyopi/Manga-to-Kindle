@@ -247,12 +247,25 @@ class MainWindow(ctk.CTk):
     # ------------- content
 
     def _build_content(self):
+        self.grid_rowconfigure(1, weight=1)
+        self.grid_columnconfigure(1, weight=1)
+
         self.browser = MangaBrowser(
             self,
-            on_manga_click=self._on_manga_click,
-            on_manga_send=self._on_manga_send,
+            on_manga_click = self._on_manga_click,
+            on_manga_send = self._on_manga_send,
         )
-        self.browser.grid(row=1, column=1, sticky="nsew", padx=0, pady=0)
+        self.browser.grid(row=1, column=1, sticky="nsew")
+
+        self.detail_panel = MangaDetailPanel(
+            self,
+            scraper=self._scraper,
+            on_back=self._on_detail_back,
+            on_send_chapter=self._on_send_chapter,
+        )
+        # detail panel hidden until a card is clicked
+        self.detail_panel.grid(row=1, column=1, sticky="nsew")
+        self.detail_panel.grid_remove()
 
         self.queue_panel = DownloadQueue(self)
         self.queue_panel.grid(row=1, column=2, sticky="nsew")
