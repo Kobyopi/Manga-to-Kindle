@@ -491,7 +491,7 @@ class MainWindow(ctk.CTk):
                 daemon=True,
             ).start()
 
-    def _run_pipeline_thread(self, manga: dict, job_id: str):
+    def _run_pipeline_thread(self, manga: dict, chapter, fmt: str, job_id: str):
         def on_progress(progress: float, status: str):
             self.after(0, lambda: self.queue_panel.update_job(job_id, progress, status))
 
@@ -501,10 +501,9 @@ class MainWindow(ctk.CTk):
                 on_progress=on_progress,
                 delete_after_send=True,
             )
-            # Chapter selection comes from send_dialog later - 
-            # for now this will be replaced when detail panel is build
+            pipeline.run(manga, chapter, fmt=fmt)
             self.after(0, lambda: self.queue_panel.finish_job(job_id))
-            self.after(0, lambda: self.statusbar.set(f"Sent: {manga['title']}"))
+            self.after(0, lambda: self.statusbar.set(f"Sent: {manga['title']} Ch.{chapter.number}"))
         except Exception as e:
             self.after(0, lambda: self.queue_panel.finish_job(job_id, error=str(e)))
             self.after(0, lambda: self.statusbar.set(f"Error: {e}"))
