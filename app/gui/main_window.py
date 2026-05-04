@@ -17,6 +17,10 @@ import threading
 from app.scraper.site_scraper import AggregatorScraper
 from app.scraper.base_scraper import MangaSummary 
 from app.kindle.pipeline import Pipeline
+from app.gui.manga_detail import MangaDetailPanel
+from app.gui.send_dialog import SendDialog
+from app.gui.settings_panel import SettingsPanel
+from app.kindle.pipeline import Pipeline
 
 CATEGORIES = [
     ("🏠", "Home"),
